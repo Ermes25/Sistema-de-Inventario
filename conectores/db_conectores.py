@@ -1,6 +1,6 @@
 import mysql.connector
 
-class DBCconector:
+class DBConector:
     def __init__(self, host='localhost', user='root',password='',database='inventario_db'):
         self.Connection = mysql.connector.connect(
             host=host,
