@@ -1,42 +1,30 @@
 import mysql.connector
 
-class DBConector:
-    def __init__(self, host='localhost', user='root',password='',database='inventario_db'):
-        self.Connection = mysql.connector.connect(
-            host=host,
-            user=user,
-            password=password,
-            database=database
+def get_connection():
+    try:
+        connection = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password=" ",
+            database="sistema_inventario"
         )
-        self.cursor = self.Connection.cursor()
-        
-    def ejecutar_consulta(self,consulta,parametros=None):
-            
-         if parametros:
-             self.cursor.execute(consulta,parametros)
+        return connection
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        return None
 
-         else:
-             self.cursor.execute(consulta)
-             self.connection.commit()
-             
-    def cerrar_conexion(self):
-          self.cursor.close()
-          self.Connection.close()       
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+def authenticate_user(username, password):
+    connection = get_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            query = "SELECT * FROM usuarios WHERE nombre_usuario = %s AND contrasena = %s"
+            cursor.execute(query, (username, password))
+            result = cursor.fetchone()
+            cursor.close()
+            connection.close()
+            return result is not None
+        except Exception as e:
+            print(f"Error: {e}")
+            return False
+    return False
